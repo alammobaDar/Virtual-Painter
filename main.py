@@ -6,14 +6,11 @@ import numpy as np
 mp_hands = mp.solutions.hands
 hands = mp_hands.Hands()
 
-# Pen color range (assuming a distinct pen tip color, like red)
-lower_color = np.array([15, 100, 100])
-upper_color = np.array([35, 255, 255])
 
 # for white
 
-lower_white = np.array([0, 0, 0])
-upper_white = np.array([180, 255, 50])
+lower_white = np.array([10, 100, 50])
+upper_white = np.array([30, 255, 150])
 
 # Open the video feed (or use an image set if preferred)
 cap = cv.VideoCapture(0)  # Using webcam for real-time hand detection
@@ -60,6 +57,7 @@ while cap.isOpened():
         if radius > 5:  # Only consider large enough pen tips
             # Draw the detected pen tip
             cv.circle(frame, (int(x), int(y)), int(radius), (0, 255, 0), 2)
+            cv.putText(frame, "black", (int(x), int(y)), cv.FONT_HERSHEY_COMPLEX, 1, (255, 255, 255), 2)
 
     # Display the processed frame with hand landmarks and pen detection
     cv.imshow('Hand and Pen Detection', frame)
