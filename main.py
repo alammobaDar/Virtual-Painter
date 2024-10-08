@@ -6,9 +6,14 @@ import numpy as np
 mp_hands = mp.solutions.hands
 hands = mp_hands.Hands()
 
-# Arrays to store 3D object points and 2D image points
-objpoints = []  # 3D points in real-world space (if applicable)
-imgpoints = []  # 2D points in image plane (detected hand landmarks)
+# Pen color range (assuming a distinct pen tip color, like red)
+lower_color = np.array([15, 100, 100])
+upper_color = np.array([35, 255, 255])
+
+# for white
+
+lower_white = np.array([0, 0, 0])
+upper_white = np.array([180, 50, 255])
 
 # Open the video feed (or use an image set if preferred)
 cap = cv.VideoCapture(0)  # Using webcam for real-time hand detection
@@ -37,15 +42,29 @@ while cap.isOpened():
                 # Add the points to the imgpoints array (2D)
                 hand_points.append([x, y])
 
-            # Append the detected landmarks for calibration
-            imgpoints.append(np.array(hand_points, dtype=np.float32))
-
             # Optionally: Visualize the landmarks on the image
             for point in hand_points:
                 cv.circle(frame, tuple(point), 5, (255, 0, 0), -1)
 
-    # Display the processed frame with hand landmarks
-    cv.imshow('Hand Calibration', frame)
+    # Detect the pen tip using color segmentation
+    hsv = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
+    mask_yellow_orange = cv.inRange(hsv, lower_color, upper_color)
+    mask_white = cv.inRange(hsv, lower_white, upper_white)
+
+    mask = cv.bitwise_or(mask_yellow_orange, mask_white)
+
+    # Find contours of the pen
+    contours, _ = cv.findContours(mask, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
+    if contours:
+        largest_contour = max(contours, key=cv.contourArea)
+        ((x, y), radius) = cv.minEnclosingCircle(largest_contour)
+
+        if radius > 5:  # Only consider large enough pen tips
+            # Draw the detected pen tip
+            cv.circle(frame, (int(x), int(y)), int(radius), (0, 255, 0), 2)
+
+    # Display the processed frame with hand landmarks and pen detection
+    cv.imshow('Hand and Pen Detection', frame)
 
     # Exit on pressing 'q'
     if cv.waitKey(1) & 0xFF == ord('q'):
