@@ -13,7 +13,7 @@ upper_color = np.array([35, 255, 255])
 # for white
 
 lower_white = np.array([0, 0, 0])
-upper_white = np.array([180, 50, 255])
+upper_white = np.array([180, 255, 50])
 
 # Open the video feed (or use an image set if preferred)
 cap = cv.VideoCapture(0)  # Using webcam for real-time hand detection
@@ -48,10 +48,8 @@ while cap.isOpened():
 
     # Detect the pen tip using color segmentation
     hsv = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
-    mask_yellow_orange = cv.inRange(hsv, lower_color, upper_color)
-    mask_white = cv.inRange(hsv, lower_white, upper_white)
+    mask = cv.inRange(hsv, lower_white, upper_white)
 
-    mask = cv.bitwise_or(mask_yellow_orange, mask_white)
 
     # Find contours of the pen
     contours, _ = cv.findContours(mask, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
