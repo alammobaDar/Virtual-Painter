@@ -30,14 +30,23 @@ with mp_hands.Hands(
     image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
     if results.multi_hand_landmarks:
       for hand_landmarks in results.multi_hand_landmarks:
-        mp_drawing.draw_landmarks(
-            image,
-            hand_landmarks,
-            mp_hands.HAND_CONNECTIONS,
-            mp_drawing_styles.get_default_hand_landmarks_style(),
-            mp_drawing_styles.get_default_hand_connections_style())
-    # Flip the image horizontally for a selfie-view display.
+          mp_drawing.draw_landmarks(
+              image,
+              hand_landmarks,
+              mp_hands.HAND_CONNECTIONS,
+              mp_drawing_styles.get_default_hand_landmarks_style(),
+              mp_drawing_styles.get_default_hand_connections_style())
+      # Flip the image horizontally for a selfie-view display.
+      for hand_landmark in results.multi_hand_landmarks.landmark:
+        index_landmark_x = hand_landmark[7].x
+        index_landmark_y = hand_landmark[7].y
+        
+        middle_landmark_x = hand_landmark[11].x
+        middle_landmark_y = hand_landmark[11].x
+      print(index_landmark_x)
+
+    
     cv2.imshow('MediaPipe Hands', cv2.flip(image, 1))
     if cv2.waitKey(5) & 0xFF == 27:
-      break
+        break
 cap.release()
