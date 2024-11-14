@@ -42,7 +42,19 @@ with mp_hands.Hands(
         index_tip_landmark = hand_landmark.landmark[7]
         middle_tip_landmark = hand_landmark.landmark[11]
 
-        
+        index_num_x = float(index_tip_landmark.x)
+        index_num_y = float(index_tip_landmark.y)
+
+        middle_num_x = float(middle_tip_landmark.x)
+        middle_num_y = float(middle_tip_landmark.y)
+
+
+        print(f"ix = {index_num_x}")
+        print(f"iy = {index_num_y}")
+        print(f"mx = {middle_num_x}")
+        print(f"my = {middle_num_y}")
+
+
 
     
     cv2.imshow('MediaPipe Hands', cv2.flip(image, 1))
