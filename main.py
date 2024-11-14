@@ -49,10 +49,8 @@ with mp_hands.Hands(
         middle_num_y = float(middle_tip_landmark.y)
 
 
-        print(f"ix = {index_num_x}")
-        print(f"iy = {index_num_y}")
-        print(f"mx = {middle_num_x}")
-        print(f"my = {middle_num_y}")
+        if (index_num_x - middle_num_x) >= -0.01 and (index_num_x - middle_num_x) <= 0.01:
+           print("test")
 
 
 
