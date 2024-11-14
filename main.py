@@ -37,13 +37,12 @@ with mp_hands.Hands(
               mp_drawing_styles.get_default_hand_landmarks_style(),
               mp_drawing_styles.get_default_hand_connections_style())
       # Flip the image horizontally for a selfie-view display.
-      for hand_landmark in results.multi_hand_landmarks.landmark:
-        index_landmark_x = hand_landmark[7].x
-        index_landmark_y = hand_landmark[7].y
-        
-        middle_landmark_x = hand_landmark[11].x
-        middle_landmark_y = hand_landmark[11].x
-      print(index_landmark_x)
+      for hand_landmark in results.multi_hand_landmarks:
+        index_tip_landmark = hand_landmark.landmark[7]
+        middle_tip_landmark = hand_landmark.landmark[11]
+
+        print(f"middle{middle_tip_landmark}")
+        print(f"index{index_tip_landmark}")
 
     
     cv2.imshow('MediaPipe Hands', cv2.flip(image, 1))
