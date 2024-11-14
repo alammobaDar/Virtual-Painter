@@ -48,9 +48,11 @@ with mp_hands.Hands(
         middle_num_x = float(middle_tip_landmark.x)
         middle_num_y = float(middle_tip_landmark.y)
 
+        cartesian_x = int((index_num_x + 1) * (cap.get(cv2.CAP_PROP_FRAME_WIDTH) /1.5))
+        cartesian_y = int((index_num_y +1) * (cap.get(cv2.CAP_PROP_FRAME_HEIGHT) /1.5))
 
-        if (index_num_x - middle_num_x) >= -0.02 and (index_num_x - middle_num_x) <= 0.02:
-           print("test")
+        if (index_num_x - middle_num_x) >= -0.04 and (index_num_x - middle_num_x) <= 0.04:
+           pen = cv2.circle(image, (cartesian_x, cartesian_y), 10, (0,0,0), -1)
 
 
 
