@@ -1,6 +1,7 @@
 import cv2
 import mediapipe as mp
 import numpy as np
+import time
 
 
 mp_drawing = mp.solutions.drawing_utils
@@ -41,8 +42,7 @@ with mp_hands.Hands(
         index_tip_landmark = hand_landmark.landmark[7]
         middle_tip_landmark = hand_landmark.landmark[11]
 
-        print(f"middle{middle_tip_landmark}")
-        print(f"index{index_tip_landmark}")
+        
 
     
     cv2.imshow('MediaPipe Hands', cv2.flip(image, 1))
