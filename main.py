@@ -39,8 +39,8 @@ with mp_hands.Hands(
               mp_drawing_styles.get_default_hand_connections_style())
       # Flip the image horizontally for a selfie-view display.
       for hand_landmark in results.multi_hand_landmarks:
-        index_tip_landmark = hand_landmark.landmark[7]
-        middle_tip_landmark = hand_landmark.landmark[11]
+        index_tip_landmark = hand_landmark.landmark[8]
+        middle_tip_landmark = hand_landmark.landmark[12]
 
         index_num_x = float(index_tip_landmark.x)
         index_num_y = float(index_tip_landmark.y)
@@ -48,11 +48,12 @@ with mp_hands.Hands(
         middle_num_x = float(middle_tip_landmark.x)
         middle_num_y = float(middle_tip_landmark.y)
 
-        cartesian_x = int((index_num_x + 1) * (cap.get(cv2.CAP_PROP_FRAME_WIDTH) /1.5))
-        cartesian_y = int((index_num_y +1) * (cap.get(cv2.CAP_PROP_FRAME_HEIGHT) /1.5))
+        cartesian_x = int((index_num_x)* cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+        cartesian_y = int((index_num_y)* cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
-        if (index_num_x - middle_num_x) >= -0.04 and (index_num_x - middle_num_x) <= 0.04:
-           pen = cv2.circle(image, (cartesian_x, cartesian_y), 10, (0,0,0), -1)
+        if (index_num_x - middle_num_x) >= -0.05 and (index_num_x - middle_num_x) <= 0.05:
+          pen = cv2.circle(image, (cartesian_x, cartesian_y), 10, (0,255,0), -1)
+
 
 
 
