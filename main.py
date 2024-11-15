@@ -39,6 +39,7 @@ with mp_hands.Hands(
               mp_hands.HAND_CONNECTIONS,
               mp_drawing_styles.get_default_hand_landmarks_style(),
               mp_drawing_styles.get_default_hand_connections_style())
+              
           index_tip_landmark = hand_landmarks.landmark[8]
           middle_tip_landmark = hand_landmarks.landmark[12]
 
