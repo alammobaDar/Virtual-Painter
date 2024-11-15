@@ -3,10 +3,12 @@ import mediapipe as mp
 import numpy as np
 import time
 
-
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
 mp_hands = mp.solutions.hands
+
+
+img_canvas = np.zeros((480, 640, 3), np.uint8)
 
 cap = cv2.VideoCapture(0)
 with mp_hands.Hands(
@@ -37,28 +39,35 @@ with mp_hands.Hands(
               mp_hands.HAND_CONNECTIONS,
               mp_drawing_styles.get_default_hand_landmarks_style(),
               mp_drawing_styles.get_default_hand_connections_style())
-      # Flip the image horizontally for a selfie-view display.
-      for hand_landmark in results.multi_hand_landmarks:
-        index_tip_landmark = hand_landmark.landmark[8]
-        middle_tip_landmark = hand_landmark.landmark[12]
+          index_tip_landmark = hand_landmarks.landmark[8]
+          middle_tip_landmark = hand_landmarks.landmark[12]
 
-        index_num_x = float(index_tip_landmark.x)
-        index_num_y = float(index_tip_landmark.y)
+          index_num_x = float(index_tip_landmark.x)
+          index_num_y = float(index_tip_landmark.y)
 
-        middle_num_x = float(middle_tip_landmark.x)
-        middle_num_y = float(middle_tip_landmark.y)
+          middle_num_x = float(middle_tip_landmark.x)
+          middle_num_y = float(middle_tip_landmark.y)
+        # for the tip of the pen
+          
+          cartesian_x = int((index_num_x)* cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+          cartesian_y = int((index_num_y)* cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
-        cartesian_x = int((index_num_x)* cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-        cartesian_y = int((index_num_y)* cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+          if (index_num_x - middle_num_x) >= -0.03 and (index_num_x - middle_num_x) <= 0.03:
+            cv2.circle(image, (cartesian_x, cartesian_y), 10, (0,255,0), -1)
+            if True:
+              xp, yp = 0, 0
 
-        if (index_num_x - middle_num_x) >= -0.05 and (index_num_x - middle_num_x) <= 0.05:
-          pen = cv2.circle(image, (cartesian_x, cartesian_y), 10, (0,255,0), -1)
-
-
-
-
-    
+              if xp == 0 and yp == 0:
+                xp, yp = cartesian_x, cartesian_y
+              cv2.line(image, (xp,yp),(cartesian_x, cartesian_y), (0,0,0), 10)
+              cv2.line(img_canvas, (xp,yp),(cartesian_x, cartesian_y), (0, 255,0), 20)
+              xp, yp = cartesian_x, cartesian_y
+          
+    cv2.imshow("Canvas", cv2.flip(img_canvas, 1))
+    # Flip the image horizontally for a selfie-view display.
     cv2.imshow('MediaPipe Hands', cv2.flip(image, 1))
+
     if cv2.waitKey(5) & 0xFF == 27:
+        print(x_y_coordinates)
         break
 cap.release()
