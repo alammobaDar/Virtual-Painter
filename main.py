@@ -6,7 +6,7 @@ import time
 
 
 def fingers_is_close(index_x, index_y, middle_x, middle_y):
-      if (index_x - middle_x) >= -0.03 and (index_x - middle_x) <= 0.03 or (index_y - middle_y) >= -0.03 and (index_y - middle_y) <= 0.03:
+      if (index_x - middle_x) >= -0.03 and (index_x - middle_x) <= 0.03 (index_y - middle_y) >= -0.03 and (index_y - middle_y) <= 0.03:
         return True
       
 
@@ -60,7 +60,7 @@ with mp_hands.Hands(
           cartesian_x = int((index_num_x)* cap.get(cv2.CAP_PROP_FRAME_WIDTH))
           cartesian_y = int((index_num_y)* cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
-          if (index_num_x - middle_num_x) >= -0.03 and (index_num_x - middle_num_x) <= 0.03:
+          if fingers_is_close(index_x=index_num_x, index_y=index_num_y, middle_x=middle_num_x, middle_y=middle_num_y):
             cv2.circle(image, (cartesian_x, cartesian_y), 10, (0,255,0), -1)
             if True:
               xp, yp = 0, 0
