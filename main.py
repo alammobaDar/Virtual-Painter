@@ -4,6 +4,9 @@ import numpy as np
 import time
 
 
+HEIGHT = 720
+WIDTH = 1280
+
 def fingers_is_close(index_x, index_y, middle_x, middle_y):
       if (index_x + index_y) - (middle_x + middle_y) <= 0.065:
         return True
@@ -12,10 +15,15 @@ mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
 mp_hands = mp.solutions.hands
 
-img_canvas = np.zeros((480, 640, 3), np.uint8)
+
+
+img_canvas = np.zeros((HEIGHT, WIDTH, 3), np.uint8)
 
 cap = cv2.VideoCapture(0)
+cap.set(3, WIDTH)
+cap.set(4, HEIGHT)
 with mp_hands.Hands(
+    max_num_hands=1,
     model_complexity=0,
     min_detection_confidence=0.5,
     min_tracking_confidence=0.5) as hands:
@@ -25,6 +33,7 @@ with mp_hands.Hands(
       print("Ignoring empty camera frame.")
       # If loading a video, use 'break' instead of 'continue'.
       continue
+    
 
     # To improve performance, optionally mark the image as not writeable to
     # pass by reference.
@@ -36,12 +45,13 @@ with mp_hands.Hands(
     image.flags.writeable = True
     image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
 
-
     img_gray = cv2.cvtColor(img_canvas, cv2.COLOR_BGRA2GRAY)
     _, img_inv = cv2.threshold(img_gray, 50, 255, cv2.THRESH_BINARY_INV)
     img_inv = cv2.cvtColor(img_inv, cv2.COLOR_GRAY2BGR)
     image = cv2.bitwise_and(image, img_inv)
     image = cv2.bitwise_or(image, img_canvas)
+
+    
 
     if results.multi_hand_landmarks:
       for hand_landmarks in results.multi_hand_landmarks:
