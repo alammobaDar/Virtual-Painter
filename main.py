@@ -6,7 +6,9 @@ import time
 
 
 def fingers_is_close(index_x, index_y, middle_x, middle_y):
-      if (index_x - middle_x) >= -0.03 and (index_x - middle_x) <= 0.03 (index_y - middle_y) >= -0.03 and (index_y - middle_y) <= 0.03:
+      if (index_x + index_y) - (middle_x + middle_y) <=0.06:
+        print(f"index({index_x + index_y})")
+        print(f"middle({middle_x + middle_y})")
         return True
       
 
