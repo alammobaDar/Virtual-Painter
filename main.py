@@ -3,6 +3,13 @@ import mediapipe as mp
 import numpy as np
 import time
 
+
+
+def fingers_is_close(index_x, index_y, middle_x, middle_y):
+      if (index_x - middle_x) >= -0.03 and (index_x - middle_x) <= 0.03 or (index_y - middle_y) >= -0.03 and (index_y - middle_y) <= 0.03:
+        return True
+      
+
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
 mp_hands = mp.solutions.hands
@@ -69,6 +76,5 @@ with mp_hands.Hands(
     cv2.imshow('MediaPipe Hands', cv2.flip(image, 1))
 
     if cv2.waitKey(5) & 0xFF == 27:
-        print(x_y_coordinates)
         break
 cap.release()
