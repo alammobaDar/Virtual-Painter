@@ -21,7 +21,7 @@ def fingers_is_close(index_x, index_y, middle_x, middle_y, index_z):
 
 
 def circle_between(image, x, y):
-    cv2.circle(image, (x, y), 20, (0,255,0), -1)
+    cv2.circle(image, (x, y), 25, (0,255,0), -1)
 
 
 mp_drawing = mp.solutions.drawing_utils
@@ -81,22 +81,19 @@ with mp_hands.Hands(
           index_num_z = float(index_tip_landmark.z)
           middle_num_x = float(middle_tip_landmark.x)
           middle_num_y = float(middle_tip_landmark.y)
-        # for the tip of the pen
+        #converting the coordinates from NDC to cartesian coordinates
           cartesian_index_x = int((index_num_x)* cap.get(cv2.CAP_PROP_FRAME_WIDTH))
           cartesian_index_y = int((index_num_y)* cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
           cartesian_middle_x= int((middle_num_x)* cap.get(cv2.CAP_PROP_FRAME_WIDTH))
           cartesian_middle_y = int((middle_num_y)* cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
-          #combination of xy of middle and index
-          combination_x =  int((cartesian_index_x + cartesian_middle_x)/2)
-          combination_y = int((cartesian_index_y + cartesian_middle_y)/2)
           
-          circle_between(image, combination_x, combination_y)
+          
+          circle_between(image, cartesian_middle_x+15, cartesian_middle_y+15)
 
           if fingers_is_close(index_x=index_num_x, index_y=index_num_y, middle_x=middle_num_x, middle_y=middle_num_y, index_z=index_num_z):
             # cv2.circle(image, (combination_x, combination_y), 10, (0,255,0), -1)
-            print(f"combination x({combination_x})")
-            print(f"combination y({combination_y})")
+
             
             if True:
               xp, yp = 0, 0
