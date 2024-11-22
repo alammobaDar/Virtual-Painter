@@ -15,7 +15,9 @@ def two_fingers(index_x, index_y, middle_x, middle_y, index_z):
         if (index_x + index_y) - (middle_x + middle_y) <= DISTANCE:
           return True
 
-
+def curved_lines():
+  pass
+  
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
 mp_hands = mp.solutions.hands
@@ -79,16 +81,21 @@ with mp_hands.Hands(
           cartesian_middle_x= int((middle_num_x)* cap.get(cv2.CAP_PROP_FRAME_WIDTH))
           cartesian_middle_y = int((middle_num_y)* cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
-          
+
+          xp, yp = cartesian_index_x, cartesian_index_y
+          points = np.array([xp, yp])
           if two_fingers(index_x=cartesian_index_x, index_y=cartesian_index_y, middle_x=cartesian_middle_x, middle_y=cartesian_middle_y, index_z=index_num_z):
             # cv2.circle(image, (combination_x, combination_y), 10, (0,255,0), -1)
-            points = np.append([cartesian_index_x, cartesian_index_y])
-            
+            points = np.append(points, [cartesian_index_x, cartesian_index_y],axis=0 )
+          points= points.reshape((-1, 1, 2))
 
-            if xp == 0 and yp == 0:
-              xp, yp = cartesian_index_x, cartesian_index_y
+          print(points)
 
-              cv2.line(img_canvas, (xp,yp),(cartesian_index_x, cartesian_index_y), PEN_COLOR, PEN_SIZE)
+          if xp == 0 and yp == 0:
+            xp, yp = cartesian_index_x, cartesian_index_y
+
+            # cv2.line(img_canvas, (xp,yp),(cartesian_index_x, cartesian_index_y), PEN_COLOR, PEN_SIZE)
+          cv2.polylines(img_canvas, points, False, PEN_COLOR, PEN_SIZE)
 
             # xp, yp = cartesian_index_x, cartesian_index_y  
           
