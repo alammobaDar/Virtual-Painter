@@ -12,11 +12,7 @@ PEN_SIZE = 20
 
 
 def two_fingers(index_x, index_y, middle_x, middle_y, index_z):
-
-
         if (index_x + index_y) - (middle_x + middle_y) <= DISTANCE:
-          # print(f"z({index_z})")
-          # print(f"difference({(index_x + index_y) - (middle_x + middle_y)})")
           return True
 
 
@@ -59,7 +55,7 @@ with mp_hands.Hands(
     image = cv2.bitwise_or(image, img_canvas)
 
     
-
+    xp, yp = 0, 0
     if results.multi_hand_landmarks:
       for hand_landmarks in results.multi_hand_landmarks:
           mp_drawing.draw_landmarks(
@@ -83,21 +79,18 @@ with mp_hands.Hands(
           cartesian_middle_x= int((middle_num_x)* cap.get(cv2.CAP_PROP_FRAME_WIDTH))
           cartesian_middle_y = int((middle_num_y)* cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
+          
           if two_fingers(index_x=cartesian_index_x, index_y=cartesian_index_y, middle_x=cartesian_middle_x, middle_y=cartesian_middle_y, index_z=index_num_z):
             # cv2.circle(image, (combination_x, combination_y), 10, (0,255,0), -1)
-
+            points = np.append([cartesian_index_x, cartesian_index_y])
             
-            if True:
-              xp, yp = 0, 0
 
-              if xp == 0 and yp == 0:
-                xp, yp = cartesian_index_x, cartesian_index_y
-              cv2.line(image, (xp,yp),(cartesian_index_x, cartesian_index_y), PEN_COLOR, PEN_SIZE)
-              cv2.line(img_canvas, (xp,yp),(cartesian_index_x, cartesian_index_y), PEN_COLOR, PEN_SIZE)
+            if xp == 0 and yp == 0:
               xp, yp = cartesian_index_x, cartesian_index_y
 
+              cv2.line(img_canvas, (xp,yp),(cartesian_index_x, cartesian_index_y), PEN_COLOR, PEN_SIZE)
 
-          
+            # xp, yp = cartesian_index_x, cartesian_index_y  
           
     cv2.flip(img_canvas, 1)
     # Flip the image horizontally for a selfie-view display.
