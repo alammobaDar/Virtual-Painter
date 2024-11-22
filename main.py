@@ -6,41 +6,19 @@ import time
 
 HEIGHT = 720
 WIDTH = 1280
-DISTANCE = 0.065
+DISTANCE = 45
 PEN_COLOR = (0, 255, 0)
 PEN_SIZE = 20
 
 
-def fingers_is_close(index_x, index_y, middle_x, middle_y, index_z):
-    
-      # if (index_x + index_y) - (middle_x + middle_y) / index_z >= 2:
-      #   # print(f"depth({(index_x + index_y) - (middle_x + middle_y) / index_z})")
+def two_fingers(index_x, index_y, middle_x, middle_y, index_z):
+
+
         if (index_x + index_y) - (middle_x + middle_y) <= DISTANCE:
           # print(f"z({index_z})")
           # print(f"difference({(index_x + index_y) - (middle_x + middle_y)})")
           return True
 
-
-    
-
-def circle_between(image, x, y, index_x, index_y):
-    circle=cv2.circle(image, (x, y), 25, (0,255,0), -1)
-
-    circles = cv2.HoughCircles(image, cv2.HOUGH_GRADIENT, dp=1, minDist=20,
-                           param1=50, param2=30, minRadius=0, maxRadius=0)
-
-    if circles is not None:
-        circles = np.uint16(np.around(circles))
-        for i in circles[0, :]:
-            # i[0], i[1] -> x, y center of the circle
-            # i[2] -> radius
-            print(f"Circle detected at: x = {i[0]}, y = {i[1]}, radius = {i[2]}")
-    else:
-        print("No circles detected.")
-        
-    
-    
-    
 
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
@@ -105,11 +83,7 @@ with mp_hands.Hands(
           cartesian_middle_x= int((middle_num_x)* cap.get(cv2.CAP_PROP_FRAME_WIDTH))
           cartesian_middle_y = int((middle_num_y)* cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
-          
-          
-          circle_between(image, cartesian_middle_x+15, cartesian_middle_y+15, cartesian_index_x, cartesian_index_y)
-
-          if fingers_is_close(index_x=index_num_x, index_y=index_num_y, middle_x=middle_num_x, middle_y=middle_num_y, index_z=index_num_z):
+          if two_fingers(index_x=cartesian_index_x, index_y=cartesian_index_y, middle_x=cartesian_middle_x, middle_y=cartesian_middle_y, index_z=index_num_z):
             # cv2.circle(image, (combination_x, combination_y), 10, (0,255,0), -1)
 
             
