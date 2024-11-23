@@ -14,6 +14,8 @@ class Hand_detection:
         self.mp_hands = mp.solutions.hands
         self.hands = self.mp_hands.Hands(self.mode, self.max_hands, self.complexity, self.detect, self.tracking)
         self.mp_draw = mp.solutions.drawing_utils
+        self.mp_drawing = mp.solutions.drawing_utils
+        self.mp_drawing_styles = mp.solutions.drawing_styles
 
     def find_hands(self, img):
         img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
@@ -21,7 +23,8 @@ class Hand_detection:
 
         if self.results.multi_hand_landmarks:
             for hand_landmarks in self.results.multi_hand_landmarks:
-                self.mp_draw.draw_landmarks(img, hand_landmarks,self.mp_hands.HAND_CONNECTIONS)
+                self.mp_draw.draw_landmarks(img, hand_landmarks,self.mp_hands.HAND_CONNECTIONS, self.mp_drawing_styles.get_default_hand_landmarks_style(),
+              self.mp_drawing_styles.get_default_hand_connections_style())
 
 def main():
 
