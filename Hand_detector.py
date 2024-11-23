@@ -1,6 +1,7 @@
 import numpy as np
 import mediapipe as mp
 import cv2
+import math
 
 class Hand_detection:
     def __init__(self, mode=False, max_num_hands=1, model_complexity=0, min_detection_confidence=0.3, min_tracking_confidence=0.3):
@@ -44,11 +45,14 @@ class Hand_detection:
                 
     def finger_modes(self, lm_list):
 
+
+        
         if not lm_list:
             return None
 
         if lm_list[8][2] < lm_list[5][2]:
-            print("DRAWING MODE")
+            #calculate the distance between two landmarks
+            print(math.sqrt(((lm_list[8][1] - lm_list[5][1])**2)+((lm_list[8][2] - lm_list[5][2])**2)))
 
 
 
