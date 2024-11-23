@@ -47,8 +47,11 @@ class Hand_detection:
 
         if not lm_list:
             return None
+
+        if 10 < math.sqrt(((lm_list[8][1] - lm_list[12][1])**2)+((lm_list[8][2] - lm_list[12][2])**2)) < 40:
+            print("Selection Mode")
         #calculate the distance between two landmarks
-        if math.sqrt(((lm_list[8][1] - lm_list[5][1])**2)+((lm_list[8][2] - lm_list[5][2])**2)) > 50:
+        elif math.sqrt(((lm_list[8][1] - lm_list[5][1])**2)+((lm_list[8][2] - lm_list[5][2])**2)) > 50:
             print("Drawing Mode")
 
 
