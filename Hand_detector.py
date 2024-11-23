@@ -28,7 +28,7 @@ class Hand_detection:
         return img_rgb
         
 
-    def detect_finger_tips(self, img, hands_no = 0):
+    def detect_finger_position(self, img, hands_no = 0):
         landmark_list = []
 
         if self.results.multi_hand_landmarks:
@@ -42,7 +42,13 @@ class Hand_detection:
         return landmark_list
             
                 
-                
+    def finger_modes(self, lm_list):
+
+        if not lm_list:
+            return None
+
+        if lm_list[8][2] < lm_list[5][2]:
+            print("DRAWING MODE")
 
 
 
@@ -54,11 +60,13 @@ def main():
     while cap.isOpened():
         success, image = cap.read()
         if not success:
-            print("nigger")
+            print("di ka nag success eh")
             continue
 
         detector.find_hands(image)
-        detector.detect_finger_tips(image)
+        lm_list = detector.detect_finger_position(image)
+
+        detector.finger_modes(lm_list)
 
         cv2.imshow('Hand Detection', cv2.flip(image, 1))
 
