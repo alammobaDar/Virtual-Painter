@@ -45,14 +45,11 @@ class Hand_detection:
                 
     def finger_modes(self, lm_list):
 
-
-        
         if not lm_list:
             return None
-
-        if lm_list[8][2] < lm_list[5][2]:
-            #calculate the distance between two landmarks
-            print(math.sqrt(((lm_list[8][1] - lm_list[5][1])**2)+((lm_list[8][2] - lm_list[5][2])**2)))
+        #calculate the distance between two landmarks
+        if math.sqrt(((lm_list[8][1] - lm_list[5][1])**2)+((lm_list[8][2] - lm_list[5][2])**2)) > 50:
+            print("Drawing Mode")
 
 
 
