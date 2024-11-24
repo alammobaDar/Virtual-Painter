@@ -65,7 +65,7 @@ class Hand_detection:
         if not lm_list:
             return None
 
-        if math.sqrt(((lm_list[20][1] - lm_list[17][1])**2)+((lm_list[20][2] - lm_list[17][2])**2)) > 100:
+        if math.sqrt(((lm_list[20][1] - lm_list[17][1])**2)+((lm_list[20][2] - lm_list[17][2])**2)) > 75:
             return True
 
 #_____________________________________
@@ -110,7 +110,6 @@ def main():
 
 
         if detector.erase_mode(lm_list):
-            print("Erase Mode")
             cv2.circle(image, (lm_list[12][1], lm_list[12][2]), 20, (0, 0, 0), -1)
 
             if xp ==0 and yp == 0:
