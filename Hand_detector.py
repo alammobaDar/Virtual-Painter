@@ -60,12 +60,22 @@ class Hand_detection:
 
         if math.sqrt(((lm_list[8][1] - lm_list[5][1])**2)+((lm_list[8][2] - lm_list[5][2])**2)) > 50:
             return True
+
+    def erase_mode(self, lm_list):
+        if not lm_list:
+            return None
+
+        if math.sqrt(((lm_list[20][1] - lm_list[17][1])**2)+((lm_list[20][2] - lm_list[17][2])**2)) > 100:
+            return True
+
 #_____________________________________
 
 HEIGHT = 720
 WIDTH = 1280
 PEN_SIZE = 25
 PEN_COLOR = (0, 255, 0)
+ERASER_COLOR = (0,0,0)
+
 
 
 #_____________________________________
@@ -98,13 +108,26 @@ def main():
 
         xp, yp = 0, 0
 
-        if detector.selection_mode(lm_list):
+
+        if detector.erase_mode(lm_list):
+            print("Erase Mode")
+            cv2.circle(image, (lm_list[12][1], lm_list[12][2]), 20, (0, 0, 0), -1)
+
+            if xp ==0 and yp == 0:
+                xp, yp = lm_list[12][1], lm_list[12][2]
+
+            cv2.line(image_canvas, (xp, yp), (lm_list[12][1], lm_list[12][2]), ERASER_COLOR, PEN_SIZE)
+
+            xp, yp = lm_list[8][1], lm_list[8][2]
+
+
+        elif detector.selection_mode(lm_list):
             print("Selection Mode")
         elif detector.drawing_mode(lm_list):
             if xp ==0 and yp == 0:
                 xp, yp = lm_list[8][1], lm_list[8][2]
 
-            cv2.line(image_canvas, (xp, yp), (lm_list[8][1], lm_list[8][2]), PEN_COLOR, PENS)
+            cv2.line(image_canvas, (xp, yp), (lm_list[8][1], lm_list[8][2]), PEN_COLOR, PEN_SIZE)
 
             xp, yp = lm_list[8][1], lm_list[8][2]
 
