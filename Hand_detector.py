@@ -42,18 +42,6 @@ class Hand_detection:
                 landmark_list.append([landmark_id, cartesian_x, cartesian_y])
 
         return landmark_list
-            
-                
-    def finger_modes(self, lm_list):
-
-        if not lm_list:
-            return None
-        #cheks the distance between index and middle
-        if math.sqrt(((lm_list[12][1] - lm_list[9][1])**2)+((lm_list[12][2] - lm_list[9][2])**2)) > 100:
-            print(math.sqrt(((lm_list[12][1] - lm_list[9][1])**2)+((lm_list[12][2] - lm_list[9][2])**2)))
-        #calculate the distance between two landmarks
-        elif math.sqrt(((lm_list[8][1] - lm_list[5][1])**2)+((lm_list[8][2] - lm_list[5][2])**2)) > 50:
-            print("Drawing Mode")
 
 
     def selection_mode(self, lm_list):
@@ -76,6 +64,9 @@ class Hand_detection:
 
 HEIGHT = 720
 WIDTH = 1280
+PEN_SIZE = 25
+PEN_COLOR = (0, 255, 0)
+
 
 #_____________________________________
 
@@ -113,7 +104,7 @@ def main():
             if xp ==0 and yp == 0:
                 xp, yp = lm_list[8][1], lm_list[8][2]
 
-            cv2.line(image_canvas, (xp, yp), (lm_list[8][1], lm_list[8][2]), (0, 255, 0), 20)
+            cv2.line(image_canvas, (xp, yp), (lm_list[8][1], lm_list[8][2]), PEN_COLOR, PENS)
 
             xp, yp = lm_list[8][1], lm_list[8][2]
 
