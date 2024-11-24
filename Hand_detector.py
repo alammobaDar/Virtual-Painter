@@ -1,3 +1,4 @@
+from turtle import width
 import numpy as np
 import mediapipe as mp
 import cv2
@@ -47,19 +48,46 @@ class Hand_detection:
 
         if not lm_list:
             return None
-
-        if 10 < math.sqrt(((lm_list[8][1] - lm_list[12][1])**2)+((lm_list[8][2] - lm_list[12][2])**2)) < 40:
-            print("Selection Mode")
+        #cheks the distance between index and middle
+        if math.sqrt(((lm_list[12][1] - lm_list[9][1])**2)+((lm_list[12][2] - lm_list[9][2])**2)) > 100:
+            print(math.sqrt(((lm_list[12][1] - lm_list[9][1])**2)+((lm_list[12][2] - lm_list[9][2])**2)))
         #calculate the distance between two landmarks
         elif math.sqrt(((lm_list[8][1] - lm_list[5][1])**2)+((lm_list[8][2] - lm_list[5][2])**2)) > 50:
             print("Drawing Mode")
 
 
+    def selection_mode(self, lm_list):
+
+        if not lm_list:
+            return None
+
+        if math.sqrt(((lm_list[12][1] - lm_list[9][1])**2)+((lm_list[12][2] - lm_list[9][2])**2)) > 100:
+            return True
+        
+
+    def drawing_mode(self, lm_list):
+
+        if not lm_list:
+            return None
+
+        if math.sqrt(((lm_list[8][1] - lm_list[5][1])**2)+((lm_list[8][2] - lm_list[5][2])**2)) > 50:
+            return True
+#_____________________________________
+
+HEIGHT = 720
+WIDTH = 1280
+
+#_____________________________________
 
 def main():
 
     cap = cv2.VideoCapture(0)
+    cap.set(3, WIDTH)
+    cap.set(4, HEIGHT)
+
     detector = Hand_detection()
+
+    image_canvas = np.zeros((HEIGHT, WIDTH, 3), np.uint8)
 
     while cap.isOpened():
         success, image = cap.read()
@@ -69,11 +97,28 @@ def main():
 
         detector.find_hands(image)
         lm_list = detector.detect_finger_position(image)
+        
+        img_gray = cv2.cvtColor(image_canvas, cv2.COLOR_BGRA2GRAY)
+        _, img_inv = cv2.threshold(img_gray, 50, 255, cv2.THRESH_BINARY_INV)
+        img_inv = cv2.cvtColor(img_inv, cv2.COLOR_GRAY2BGR)
+        image = cv2.bitwise_and(image, img_inv)
+        image = cv2.bitwise_or(image, image_canvas)
 
-        detector.finger_modes(lm_list)
 
+        xp, yp = 0, 0
+
+        if detector.selection_mode(lm_list):
+            print("Selection Mode")
+        elif detector.drawing_mode(lm_list):
+            if xp ==0 and yp == 0:
+                xp, yp = lm_list[8][1], lm_list[8][2]
+
+            cv2.line(image_canvas, (xp, yp), (lm_list[8][1], lm_list[8][2]), (0, 255, 0), 20)
+
+            xp, yp = lm_list[8][1], lm_list[8][2]
+
+        cv2.flip(image_canvas, 1)
         cv2.imshow('Hand Detection', cv2.flip(image, 1))
-
         if cv2.waitKey(5) & 0xFF == 27:
             break
     cap.release()
