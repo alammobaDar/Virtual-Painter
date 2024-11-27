@@ -36,10 +36,10 @@ class Hand_detection:
         if self.results.multi_hand_landmarks:
             selected_hands = self.results.multi_hand_landmarks[hands_no]
             for landmark_id, landmarks in enumerate(selected_hands.landmark):
-                height, width, _ = img.shape
+                height, width, c = img.shape
 
-                cartesian_x, cartesian_y = int(landmarks.x * width), int(landmarks.y * height)
-                landmark_list.append([landmark_id, cartesian_x, cartesian_y])
+                cartesian_x, cartesian_y, z = int(landmarks.x * width), int(landmarks.y * height), landmarks.z
+                landmark_list.append([landmark_id, cartesian_x, cartesian_y, z])
 
         return landmark_list
 
@@ -49,7 +49,7 @@ class Hand_detection:
         if not lm_list:
             return None
 
-        if math.sqrt(((lm_list[12][1] - lm_list[9][1])**2)+((lm_list[12][2] - lm_list[9][2])**2)) > 100:
+        if math.sqrt(((lm_list[12][1] - lm_list[9][1])**2)+((lm_list[12][2] - lm_list[9][2])**2)) > (((abs(lm_list[12][3])*-99)+101))/2:
             return True
         
 
@@ -58,14 +58,14 @@ class Hand_detection:
         if not lm_list:
             return None
 
-        if math.sqrt(((lm_list[8][1] - lm_list[5][1])**2)+((lm_list[8][2] - lm_list[5][2])**2)) > 50:
+        if math.sqrt(((lm_list[8][1] - lm_list[5][1])**2)+((lm_list[8][2] - lm_list[5][2])**2)) > (((abs(lm_list[8][3])*-99)+101))/2:
             return True
 
     def erase_mode(self, lm_list):
         if not lm_list:
             return None
 
-        if math.sqrt(((lm_list[20][1] - lm_list[17][1])**2)+((lm_list[20][2] - lm_list[17][2])**2)) > 75:
+        if math.sqrt(((lm_list[20][1] - lm_list[17][1])**2)+((lm_list[20][2] - lm_list[17][2])**2)) > (((abs(lm_list[20][3])*99)+101))/2:
             return True
 
 #_____________________________________
@@ -117,9 +117,15 @@ def main():
 
             xp, yp = lm_list[8][1], lm_list[8][2]
 
-
+            print(f"erase mode  {math.sqrt(((lm_list[20][1] - lm_list[17][1])**2)+((lm_list[20][2] - lm_list[17][2])**2)) > abs(50*lm_list[8][3])+20}")
+            print(f"position  {math.sqrt(((lm_list[20][1] - lm_list[17][1])**2)+((lm_list[20][2] - lm_list[17][2])**2))}")
+            print(f"distance {abs(50*lm_list[20][3])+20}")
+            print(f"z {lm_list[20][3]}")
         elif detector.selection_mode(lm_list):
-            print("Selection Mode")
+            # print("Selection Mode")
+            print(f"selection mode  {math.sqrt(((lm_list[12][1] - lm_list[9][1])**2)+((lm_list[12][2] - lm_list[9][2])**2)) > abs(50*lm_list[8][3])+20}")
+            print(f"position  {math.sqrt(((lm_list[12][1] - lm_list[9][1])**2)+((lm_list[12][2] - lm_list[9][2])**2))}")
+            print(f"distance {abs(50*lm_list[8][3])+20}")
         elif detector.drawing_mode(lm_list):
             if xp ==0 and yp == 0:
                 xp, yp = lm_list[8][1], lm_list[8][2]
@@ -127,6 +133,10 @@ def main():
             cv2.line(image_canvas, (xp, yp), (lm_list[8][1], lm_list[8][2]), PEN_COLOR, PEN_SIZE)
 
             xp, yp = lm_list[8][1], lm_list[8][2]
+
+            print(f"drawing mode  {math.sqrt(((lm_list[8][1] - lm_list[5][1])**2)+((lm_list[8][2] - lm_list[5][2])**2)) > abs(50*lm_list[8][3])+20}")
+            print(f"position  {math.sqrt(((lm_list[8][1] - lm_list[5][1])**2)+((lm_list[8][2] - lm_list[5][2])**2))}")
+            print(f"distance {abs(50*lm_list[8][3])+20}")
 
         cv2.flip(image_canvas, 1)
         cv2.imshow('Hand Detection', cv2.flip(image, 1))
