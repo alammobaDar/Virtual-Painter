@@ -75,6 +75,7 @@ WIDTH = 1280
 PEN_SIZE = 25
 PEN_COLOR = (0, 255, 0)
 ERASER_COLOR = (0,0,0)
+ERASER_SIZE = 40
 
 #_____________________________________
 
@@ -108,12 +109,12 @@ def main():
 
 
         if detector.erase_mode(lm_list):
-            cv2.circle(image, (lm_list[12][1], lm_list[12][2]), 20, (0, 0, 0), -1)
+            cv2.circle(image, (lm_list[12][1], lm_list[12][2]), ERASER_SIZE, (0, 0, 0), -1)
 
             if xp ==0 and yp == 0:
                 xp, yp = lm_list[12][1], lm_list[12][2]
 
-            cv2.line(image_canvas, (xp, yp), (lm_list[12][1], lm_list[12][2]), ERASER_COLOR, PEN_SIZE)
+            cv2.line(image_canvas, (xp, yp), (lm_list[12][1], lm_list[12][2]), ERASER_COLOR, ERASER_SIZE)
 
             xp, yp = lm_list[8][1], lm_list[8][2]
 
