@@ -9,7 +9,7 @@ class VideoHolder(QMainWindow):
         super().__init__()
 
         self.setWindowTitle("Virtual Painter")
-        self.setGeometry(100, 100, 1300, 800)
+        self.setGeometry(100, 100, 1500, 1000)
 
         self.central_widget = QWidget()
         self.setCentralWidget(self.central_widget)
@@ -30,8 +30,8 @@ class VideoHolder(QMainWindow):
 
         self.start_button.clicked.connect(self.start_capture)
         self.stop_button.clicked.connect(self.stop_capture)
-
-
+        
+           
     def start_capture(self):
         self.cap = cv2.VideoCapture(0)
         if not self.cap.isOpened():
@@ -54,18 +54,22 @@ class VideoHolder(QMainWindow):
             if not success:
                 print("Biglang di nagsuccess")
 
-            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-            height, width, channel = image.shape
-            qimg = QImage(image.data, width, height, channel * width, QImage.Format_RGB888)
+            self.image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+            self.image = cv2.flip(self.image, 1)
+            self.image = cv2.resize(self.image, (1500, 910))
+
+            height, width, channel = self.image.shape
+            qimg = QImage(self.image.data, width, height, channel * width, QImage.Format_RGB888)
             
             pixmap = QPixmap.fromImage(qimg)
+            
             self.video_label.setPixmap(pixmap)
 
     def close_frame(self, event):
         self.stop_capture()
         event.accept
         
-        
+    
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     main_window = VideoHolder()
