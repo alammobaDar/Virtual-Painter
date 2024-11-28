@@ -26,6 +26,10 @@ class VideoHolder(QMainWindow):
 
         self.cap = None
         self.timer = QTimer(self)
+        self.timer.timeout.connect(self.update_frame)
+
+        self.start_button.clicked.connect(self.start_capture)
+        self.stop_button.clicked.connect(self.stop_capture)
 
 
     def start_capture(self):
@@ -50,7 +54,16 @@ class VideoHolder(QMainWindow):
             if not success:
                 print("Biglang di nagsuccess")
 
+            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+            height, width, channel = image.shape
+            qimg = QImage(image.data, width, height, channel * width, QImage.Format_RGB888)
+            
+            pixmap = QPixmap.fromImage(qimg)
+            self.video_label.setPixmap(pixmap)
 
+    def close_frame(self, event):
+        self.stop_capture()
+        event.accept
         
         
 if __name__ == "__main__":
