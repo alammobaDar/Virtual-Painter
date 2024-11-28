@@ -41,7 +41,7 @@ class VideoHolder(QMainWindow):
         if not self.cap.isOpened():
             print("self.cap is not open")
 
-        self.timer.start(30)
+        self.timer.start(25)
     
     def stop_capture(self):
         self.timer.stop()
