@@ -1,39 +1,89 @@
-import math
+import sys
+import cv2
+from PyQt5.QtCore import QTimer, Qt
+from PyQt5.QtGui import QImage, QPixmap
+from PyQt5.QtWidgets import QApplication, QLabel, QMainWindow, QVBoxLayout, QWidget, QPushButton
 
-def ndc_to_cartesian(z_ndc, z_near, z_far):
-    """Convert Z from NDC to Cartesian coordinates."""
-    return ((z_ndc * (z_far - z_near)) + (z_near + z_far)) / 2
 
-def calculate_position(x1, y1, x2, y2):
-    """Calculate 2D position (distance between two points)."""
-    return math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
+class VideoCaptureApp(QMainWindow):
+    def __init__(self):
+        super().__init__()
 
-def calculate_distance_3d(x1, y1, z1, x2, y2, z2):
-    """Calculate 3D distance between two points."""
-    return math.sqrt((x2 - x1)**2 + (y2 - y1)**2 + (z2 - z1)**2)
+        self.setWindowTitle("OpenCV Video Capture in PyQt5")
+        self.setGeometry(100, 100, 800, 600)
 
-def calculate_weighted_distance(x1, y1, z1, x2, y2, z2, weight=1.0):
-    """Calculate weighted 3D distance with Z contribution scaled by weight."""
-    return math.sqrt((x2 - x1)**2 + (y2 - y1)**2 + weight * (z2 - z1)**2)
+        # Layout and widgets
+        self.central_widget = QWidget()
+        self.setCentralWidget(self.central_widget)
 
-# Input data
-x1, y1 = 0, 0  # Point 1 (2D)
-x2, y2 = 249.56161563830284, 0  # Point 2 (2D)
-z_ndc_1, z_ndc_2 = -0.1569426953792572, -0.1569426953792572  # Z values in NDC
+        self.video_label = QLabel()  # Label to display video frames
+        self.video_label.setAlignment(Qt.AlignCenter)
 
-# Projection parameters
-z_near, z_far = 1, 100  # Near and far planes
+        self.start_button = QPushButton("Start Capture")
+        self.stop_button = QPushButton("Stop Capture")
+        self.stop_button.setEnabled(False)
 
-# Convert Z from NDC to Cartesian
-z1_cartesian = ndc_to_cartesian(z_ndc_1, z_near, z_far)
-z2_cartesian = ndc_to_cartesian(z_ndc_2, z_near, z_far)
+        layout = QVBoxLayout()
+        layout.addWidget(self.video_label)
+        layout.addWidget(self.start_button)
+        layout.addWidget(self.stop_button)
+        self.central_widget.setLayout(layout)
 
-# Compute position and distances
-position_2d = calculate_position(x1, y1, x2, y2)
-distance_3d = calculate_distance_3d(x1, y1, z1_cartesian, x2, y2, z2_cartesian)
-weighted_distance = calculate_weighted_distance(x1, y1, z1_cartesian, x2, y2, z2_cartesian, weight=0.5)
+        # Video capture attributes
+        self.cap = None
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.update_frame)
 
-# Print results
-print("Position (2D):", position_2d)
-print("Distance (3D):", distance_3d)
-print("Weighted Distance (w=0.5):", weighted_distance)
+        # Button actions
+        self.start_button.clicked.connect(self.start_capture)
+        self.stop_button.clicked.connect(self.stop_capture)
+
+    def start_capture(self):
+        """Start the video capture."""
+        self.cap = cv2.VideoCapture(0)  # 0 is the default camera
+        if not self.cap.isOpened():
+            print("Error: Could not open camera.")
+            return
+
+        self.timer.start(30)  # Update every 30ms (~30 FPS)
+        self.start_button.setEnabled(False)
+        self.stop_button.setEnabled(True)
+
+    def stop_capture(self):
+        """Stop the video capture."""
+        self.timer.stop()
+        if self.cap is not None:
+            self.cap.release()
+            self.cap = None
+
+        self.video_label.clear()
+        self.start_button.setEnabled(True)
+        self.stop_button.setEnabled(False)
+
+    def update_frame(self):
+        """Update the video frame."""
+        if self.cap is not None and self.cap.isOpened():
+            ret, frame = self.cap.read()
+            if ret:
+                # Convert frame to QImage
+                frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)  # Convert BGR to RGB
+                height, width, channel = frame.shape
+                qimg = QImage(frame.data, width, height, channel * width, QImage.Format_RGB888)
+
+                # Display the image on QLabel
+                pixmap = QPixmap.fromImage(qimg)
+                self.video_label.setPixmap(pixmap)
+            else:
+                print("Error: Could not read frame.")
+
+    def closeEvent(self, event):
+        """Ensure the video capture is released on close."""
+        self.stop_capture()
+        event.accept()
+
+
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    main_window = VideoCaptureApp()
+    main_window.show()
+    sys.exit(app.exec())
