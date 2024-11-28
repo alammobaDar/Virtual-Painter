@@ -3,6 +3,7 @@ from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtWidgets import QApplication, QLabel, QMainWindow, QVBoxLayout, QWidget, QPushButton
 from PyQt5.QtGui import QImage, QPixmap
 import cv2
+from Hand_detector import Hand_detection
 
 class VideoHolder(QMainWindow):
     def __init__(self):
@@ -27,6 +28,9 @@ class VideoHolder(QMainWindow):
         self.cap = None
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_frame)
+
+        self.detector = Hand_detection()
+
 
         self.start_button.clicked.connect(self.start_capture)
         self.stop_button.clicked.connect(self.stop_capture)
@@ -57,6 +61,7 @@ class VideoHolder(QMainWindow):
             self.image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             self.image = cv2.flip(self.image, 1)
             self.image = cv2.resize(self.image, (1500, 910))
+            self.detector.find_hands(self.image)
 
             height, width, channel = self.image.shape
             qimg = QImage(self.image.data, width, height, channel * width, QImage.Format_RGB888)

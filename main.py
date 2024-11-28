@@ -3,7 +3,7 @@ import cv2
 from PyQt5.QtCore import QTimer, Qt
 from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.QtWidgets import QApplication, QLabel, QMainWindow, QVBoxLayout, QWidget, QPushButton
-
+from Hand_detector import Hand_detection
 
 class VideoCaptureApp(QMainWindow):
     def __init__(self):
@@ -22,6 +22,7 @@ class VideoCaptureApp(QMainWindow):
         self.start_button = QPushButton("Start Capture")
         self.stop_button = QPushButton("Stop Capture")
         self.stop_button.setEnabled(False)
+
 
         layout = QVBoxLayout()
         layout.addWidget(self.video_label)
@@ -66,6 +67,7 @@ class VideoCaptureApp(QMainWindow):
             ret, frame = self.cap.read()
             if ret:
                 # Convert frame to QImage
+                
                 frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)  # Convert BGR to RGB
                 height, width, channel = frame.shape
                 qimg = QImage(frame.data, width, height, channel * width, QImage.Format_RGB888)
