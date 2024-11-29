@@ -43,29 +43,32 @@ class Hand_detection:
 
         return landmark_list
 
+    def distance(self, tip_x, tip_y, knuckle_x, knuckle_y):
+        return math.sqrt(((tip_x - knuckle_x)**2)+((tip_y - knuckle_y)**2))
+    
+    def limit(self, tip_z):
+        return (50+ abs(tip_z*1000)) - abs(tip_z*100+10)
 
     def selection_mode(self, lm_list):
 
         if not lm_list:
             return None
 
-        if math.sqrt(((lm_list[12][1] - lm_list[9][1])**2)+((lm_list[12][2] - lm_list[9][2])**2)) >  (50+ abs(lm_list[12][3]*1000)) - abs(lm_list[20][3]*100+10):
+        elif self.distance(tip_x=lm_list[12][1], tip_y=lm_list[12][2], knuckle_x=lm_list[9][1], knuckle_y=lm_list[9][2]) >  self.limit(tip_z=lm_list[12][3]):
             return True
-        
 
     def drawing_mode(self, lm_list):
 
         if not lm_list:
             return None
-
-        if math.sqrt(((lm_list[8][1] - lm_list[5][1])**2)+((lm_list[8][2] - lm_list[5][2])**2)) > (50+ abs(lm_list[8][3]*1000)) - abs(lm_list[8][3]*100+10):
+        elif self.distance(tip_x=lm_list[8][1], tip_y=lm_list[8][2], knuckle_x=lm_list[5][1], knuckle_y=lm_list[5][2]) >  self.limit(tip_z=lm_list[8][3]):
             return True
 
     def erase_mode(self, lm_list):
         if not lm_list:
             return None
 
-        if math.sqrt(((lm_list[20][1] - lm_list[17][1])**2)+((lm_list[20][2] - lm_list[17][2])**2)) > (30+ abs(lm_list[20][3]*1000))- abs(lm_list[20][3]*100+10):
+        elif math.sqrt(((lm_list[20][1] - lm_list[17][1])**2)+((lm_list[20][2] - lm_list[17][2])**2)) > (30+ abs(lm_list[20][3]*1000))- abs(lm_list[20][3]*100+10):
             return True
 
 #_____________________________________

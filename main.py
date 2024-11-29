@@ -1,91 +1,76 @@
-import sys
+from turtle import width
+import numpy as np
+import mediapipe as mp
 import cv2
-from PyQt5.QtCore import QTimer, Qt
-from PyQt5.QtGui import QImage, QPixmap
-from PyQt5.QtWidgets import QApplication, QLabel, QMainWindow, QVBoxLayout, QWidget, QPushButton
+import math
+
 from Hand_detector import Hand_detection
 
-class VideoCaptureApp(QMainWindow):
-    def __init__(self):
-        super().__init__()
-
-        self.setWindowTitle("OpenCV Video Capture in PyQt5")
-        self.setGeometry(100, 100, 800, 600)
-
-        # Layout and widgets
-        self.central_widget = QWidget()
-        self.setCentralWidget(self.central_widget)
-
-        self.video_label = QLabel()  # Label to display video frames
-        self.video_label.setAlignment(Qt.AlignCenter)
-
-        self.start_button = QPushButton("Start Capture")
-        self.stop_button = QPushButton("Stop Capture")
-        self.stop_button.setEnabled(False)
+HEIGHT = 720
+WIDTH = 1280
+PEN_SIZE = 25
+PEN_COLOR = (0, 255, 0)
+ERASER_COLOR = (0,0,0)
+ERASER_SIZE = 40
 
 
-        layout = QVBoxLayout()
-        layout.addWidget(self.video_label)
-        layout.addWidget(self.start_button)
-        layout.addWidget(self.stop_button)
-        self.central_widget.setLayout(layout)
+def main():
 
-        # Video capture attributes
-        self.cap = None
-        self.timer = QTimer(self)
-        self.timer.timeout.connect(self.update_frame)
+    cap = cv2.VideoCapture(0)
+    cap.set(3, WIDTH)
+    cap.set(4, HEIGHT)
 
-        # Button actions
-        self.start_button.clicked.connect(self.start_capture)
-        self.stop_button.clicked.connect(self.stop_capture)
+    detector = Hand_detection()
 
-    def start_capture(self):
-        """Start the video capture."""
-        self.cap = cv2.VideoCapture(0)  # 0 is the default camera
-        if not self.cap.isOpened():
-            print("Error: Could not open camera.")
-            return
+    image_canvas = np.zeros((HEIGHT, WIDTH, 3), np.uint8)
 
-        self.timer.start(30)  # Update every 30ms (~30 FPS)
-        self.start_button.setEnabled(False)
-        self.stop_button.setEnabled(True)
+    while cap.isOpened():
+        success, image = cap.read()
+        if not success:
+            print("di ka nag success eh")
+            continue
 
-    def stop_capture(self):
-        """Stop the video capture."""
-        self.timer.stop()
-        if self.cap is not None:
-            self.cap.release()
-            self.cap = None
+        detector.find_hands(image)
+        lm_list = detector.detect_finger_position(image)
+        
+        img_gray = cv2.cvtColor(image_canvas, cv2.COLOR_BGRA2GRAY)
+        _, img_inv = cv2.threshold(img_gray, 50, 255, cv2.THRESH_BINARY_INV)
+        img_inv = cv2.cvtColor(img_inv, cv2.COLOR_GRAY2BGR)
+        image = cv2.bitwise_and(image, img_inv)
+        image = cv2.bitwise_or(image, image_canvas)
 
-        self.video_label.clear()
-        self.start_button.setEnabled(True)
-        self.stop_button.setEnabled(False)
 
-    def update_frame(self):
-        """Update the video frame."""
-        if self.cap is not None and self.cap.isOpened():
-            ret, frame = self.cap.read()
-            if ret:
-                # Convert frame to QImage
-                
-                frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)  # Convert BGR to RGB
-                height, width, channel = frame.shape
-                qimg = QImage(frame.data, width, height, channel * width, QImage.Format_RGB888)
+        xp, yp = 0, 0
 
-                # Display the image on QLabel
-                pixmap = QPixmap.fromImage(qimg)
-                self.video_label.setPixmap(pixmap)
-            else:
-                print("Error: Could not read frame.")
 
-    def closeEvent(self, event):
-        """Ensure the video capture is released on close."""
-        self.stop_capture()
-        event.accept()
+        if detector.erase_mode(lm_list):
+            cv2.circle(image, (lm_list[12][1], lm_list[12][2]), ERASER_SIZE, (0, 0, 0), -1)
 
+            if xp ==0 and yp == 0:
+                xp, yp = lm_list[12][1], lm_list[12][2]
+
+            cv2.line(image_canvas, (xp, yp), (lm_list[12][1], lm_list[12][2]), ERASER_COLOR, ERASER_SIZE)
+
+            xp, yp = lm_list[8][1], lm_list[8][2]
+
+        elif detector.selection_mode(lm_list):
+            # print("Selection Mode")
+            pass
+
+        elif detector.drawing_mode(lm_list):
+            if xp ==0 and yp == 0:
+                xp, yp = lm_list[8][1], lm_list[8][2]
+
+            cv2.line(image_canvas, (xp, yp), (lm_list[8][1], lm_list[8][2]), PEN_COLOR, PEN_SIZE)
+
+            xp, yp = lm_list[8][1], lm_list[8][2]
+
+        cv2.flip(image_canvas, 1)
+        cv2.imshow('Hand Detection', cv2.flip(image, 1))
+        if cv2.waitKey(5) & 0xFF == 27:
+            break
+    cap.release()
+    cv2.destroyAllWindows()
 
 if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    main_window = VideoCaptureApp()
-    main_window.show()
-    sys.exit(app.exec())
+    main()
