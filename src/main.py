@@ -4,7 +4,7 @@ import mediapipe as mp
 import cv2
 import math
 
-from Hand_detector import Hand_detection
+from src.Hand_detector import Hand_detection
 
 HEIGHT = 720
 WIDTH = 1280
@@ -23,6 +23,8 @@ def main():
     detector = Hand_detection()
 
     image_canvas = np.zeros((HEIGHT, WIDTH, 3), np.uint8)
+
+    setter_image = cv2.resize(cv2.imread())
 
     while cap.isOpened():
         success, image = cap.read()

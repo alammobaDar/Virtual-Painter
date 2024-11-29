@@ -3,7 +3,7 @@ from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtWidgets import QApplication, QLabel, QMainWindow, QVBoxLayout, QWidget, QPushButton
 from PyQt5.QtGui import QImage, QPixmap
 import cv2
-from Hand_detector import Hand_detection
+from src.Hand_detector import Hand_detection
 
 class VideoHolder(QMainWindow):
     def __init__(self):
