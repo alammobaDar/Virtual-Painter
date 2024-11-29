@@ -1,10 +1,9 @@
-from turtle import width
 import numpy as np
 import mediapipe as mp
 import cv2
 import math
 
-from src.Hand_detector import Hand_detection
+from Hand_detector import Hand_detection
 
 HEIGHT = 720
 WIDTH = 1280
@@ -24,14 +23,20 @@ def main():
 
     image_canvas = np.zeros((HEIGHT, WIDTH, 3), np.uint8)
 
-    setter_image = cv2.resize(cv2.imread())
+    setter_image = cv2.imread("src\images\SETTER.png")
+
+    width, height = 300, 720
+    setter_image = cv2.resize(setter_image, (width, height))
+
+    img2gray = cv2.cvtColor(setter_image, cv2.COLOR_BGR2GRAY) 
+    ret, mask = cv2.threshold(img2gray, 1, 255, cv2.THRESH_BINARY) 
+
 
     while cap.isOpened():
         success, image = cap.read()
         if not success:
             print("di ka nag success eh")
             continue
-
         detector.find_hands(image)
         lm_list = detector.detect_finger_position(image)
         
@@ -41,9 +46,17 @@ def main():
         image = cv2.bitwise_and(image, img_inv)
         image = cv2.bitwise_or(image, image_canvas)
 
-
         xp, yp = 0, 0
 
+        # Region of Image (ROI), where we want to insert logo 
+        roi = image[-height-10:10, -width-10:10] 
+    
+        # Set an index of where the mask is 
+        roi[np.where(mask)] = 0
+        roi += setter_image
+
+        print(f"roi {roi.shape}")
+        print(f"mask {mask.shape}")
 
         if detector.erase_mode(lm_list):
             cv2.circle(image, (lm_list[12][1], lm_list[12][2]), ERASER_SIZE, (0, 0, 0), -1)
