@@ -24,7 +24,7 @@ def main():
     image_canvas = np.zeros((HEIGHT, WIDTH, 3), np.uint8)
 
     setter_image = cv2.imread("src\images\SETTER.png")
-    image_width, image_height = 300, 720
+    image_width, image_height = 200, 720
     setter_image = cv2.resize(setter_image, (image_width, image_height))
 
 
@@ -58,9 +58,14 @@ def main():
             xp, yp = lm_list[8][1], lm_list[8][2]
 
         elif detector.selection_mode(lm_list):
-            # print("Selection Mode")
-            pass
+            if 200 > lm_list[12][1] > 0 and 120 > lm_list[12][2] > 0:
+                print("danfriend")
 
+            elif 200 > lm_list[12][1] > 0 and 250 > lm_list >130:
+                print("luis")
+
+            else:
+                print(f"({lm_list[8][1]}, {lm_list[8][2]})")
         elif detector.drawing_mode(lm_list):
             if xp ==0 and yp == 0:
                 xp, yp = lm_list[8][1], lm_list[8][2]
@@ -69,7 +74,7 @@ def main():
 
             xp, yp = lm_list[8][1], lm_list[8][2]
 
-        image[0:720, 0:300] = setter_image
+        image[0:720, 0:200] = setter_image
 
         cv2.flip(image_canvas, 1)
         cv2.imshow('Hand Detection', cv2.flip(image, 1))
