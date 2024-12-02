@@ -49,11 +49,12 @@ def main(pen_color = (0, 255, 0)):
             if 200 > lm_list[12][1] > 0 and 120 > lm_list[12][2] > 0:
                 pen_color = (0, 255, 0)
 
-            elif 200 > lm_list[12][1] > 0 and 250 > lm_list[12][2] > 130:
-                pen_color = (255, 0, 0)
+            elif 200 > lm_list[12][1] > 0 and 240 > lm_list[12][2] > 130:
+                pen_color = (0, 0, 255)
 
             elif 200 > lm_list[12][1] > 0 and 370 > lm_list[12][2] > 260:
-                pen_color = (0, 0, 255)
+                pen_color = (255, 0, 0)
+
 
             elif 200 > lm_list[12][1] > 0 and 520 > lm_list[12][2] > 380:
                 pen_color = (0, 0, 0)
