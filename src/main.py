@@ -1,3 +1,4 @@
+
 import numpy as np
 import mediapipe as mp
 import cv2
@@ -12,7 +13,7 @@ ERASER_COLOR = (0,0,0)
 ERASER_SIZE = 40
 
 
-def main(pen_color = (0, 255, 0)):
+def main(pen_color = (0, 255, 0), pen_size = 25):
 
     cap = cv2.VideoCapture(0)
     cap.set(3, WIDTH)
@@ -59,13 +60,19 @@ def main(pen_color = (0, 255, 0)):
             elif 200 > lm_list[12][1] > 0 and 520 > lm_list[12][2] > 380:
                 pen_color = (0, 0, 0)
 
+            elif 200 > lm_list[12][1] > 100 and 720 > lm_list[12][2] > 540:
+                pen_size += 1
+                print(pen_size)
+            elif 100 > lm_list[12][1] > 0 and 720 > lm_list[12][2] > 540:
+                pen_size -= 1
+                print(pen_size)
             else:
                 print(f"({lm_list[8][1]}, {lm_list[8][2]})")
         elif detector.drawing_mode(lm_list):
             if xp ==0 and yp == 0:
                 xp, yp = lm_list[8][1], lm_list[8][2]
 
-            cv2.line(image_canvas, (xp, yp), (lm_list[8][1], lm_list[8][2]), pen_color, PEN_SIZE)
+            cv2.line(image_canvas, (xp, yp), (lm_list[8][1], lm_list[8][2]), pen_color, pen_size)
 
             xp, yp = lm_list[8][1], lm_list[8][2]
 
