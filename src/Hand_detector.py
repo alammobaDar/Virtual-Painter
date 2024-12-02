@@ -12,7 +12,6 @@ class Hand_detection:
         self.detect = min_detection_confidence
         self.tracking = min_tracking_confidence
 
-        self.tip_ids = [4, 8, 12, 16, 20]
         self.mp_hands = mp.solutions.hands
         self.hands = self.mp_hands.Hands(self.mode, self.max_hands, self.complexity, self.detect, self.tracking)
         self.mp_draw = mp.solutions.drawing_utils
@@ -31,7 +30,7 @@ class Hand_detection:
         
 
     def detect_finger_position(self, img, hands_no = 0):
-        landmark_list = []
+        self.landmark_list = []
 
         if self.results.multi_hand_landmarks:
             selected_hands = self.results.multi_hand_landmarks[hands_no]
@@ -39,9 +38,9 @@ class Hand_detection:
                 height, width, c = img.shape
 
                 cartesian_x, cartesian_y, z = int(landmarks.x * width), int(landmarks.y * height), landmarks.z
-                landmark_list.append([landmark_id, cartesian_x, cartesian_y, z])
+                self.landmark_list.append([landmark_id, cartesian_x, cartesian_y, z])
 
-        return landmark_list
+        return self.landmark_list
 
     def distance(self, tip_x, tip_y, knuckle_x, knuckle_y):
         return math.sqrt(((tip_x - knuckle_x)**2)+((tip_y - knuckle_y)**2))
@@ -64,6 +63,9 @@ class Hand_detection:
         elif self.distance(tip_x=lm_list[8][1], tip_y=lm_list[8][2], knuckle_x=lm_list[5][1], knuckle_y=lm_list[5][2]) >  self.limit(tip_z=lm_list[8][3], amount=30):
             return True
 
+
+    def hand_landmark_coordinates(self, landmark, coordinate):
+        return self.landmark_list[landmark][coordinate]
 #_____________________________________
 
 HEIGHT = 720
@@ -106,17 +108,7 @@ def main():
         xp, yp = 0, 0
 
 
-        if detector.erase_mode(lm_list):
-            cv2.circle(image, (lm_list[12][1], lm_list[12][2]), ERASER_SIZE, (0, 0, 0), -1)
-
-            if xp ==0 and yp == 0:
-                xp, yp = lm_list[12][1], lm_list[12][2]
-
-            cv2.line(image_canvas, (xp, yp), (lm_list[12][1], lm_list[12][2]), ERASER_COLOR, ERASER_SIZE)
-
-            xp, yp = lm_list[8][1], lm_list[8][2]
-
-        elif detector.selection_mode(lm_list):
+        if detector.selection_mode(lm_list):
             print("Selection Mode")
 
         elif detector.drawing_mode(lm_list):
