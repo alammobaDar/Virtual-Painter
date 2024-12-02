@@ -47,26 +47,19 @@ def main():
 
         # Region of Image (ROI), where we want to insert logo 
 
-        if detector.erase_mode(lm_list):
-            cv2.circle(image, (lm_list[12][1], lm_list[12][2]), ERASER_SIZE, (0, 0, 0), -1)
 
-            if xp ==0 and yp == 0:
-                xp, yp = lm_list[12][1], lm_list[12][2]
-
-            cv2.line(image_canvas, (xp, yp), (lm_list[12][1], lm_list[12][2]), ERASER_COLOR, ERASER_SIZE)
-
-            xp, yp = lm_list[8][1], lm_list[8][2]
-
-        elif detector.selection_mode(lm_list):
+        if detector.selection_mode(lm_list):
             if 200 > lm_list[12][1] > 0 and 120 > lm_list[12][2] > 0:
-                print("danfriend")
+                PEN_COLOR = (0, 255, 0)
 
             elif 200 > lm_list[12][1] > 0 and 250 > lm_list[12][2] > 130:
-                print("luis")
+                PEN_COLOR = (255, 0, 0)
 
             elif 200 > lm_list[12][1] > 0 and 370 > lm_list[12][2] > 260:
-                print("jonel")
+                PEN_COLOR = (0, 0, 255)
 
+            elif 200 > lm_list[12][1] > 0 and 520 > lm_list[12][2] > 380:
+                PEN_COLOR = (0, 0, 0)
 
             else:
                 print(f"({lm_list[8][1]}, {lm_list[8][2]})")
