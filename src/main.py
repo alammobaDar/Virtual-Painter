@@ -24,12 +24,9 @@ def main():
     image_canvas = np.zeros((HEIGHT, WIDTH, 3), np.uint8)
 
     setter_image = cv2.imread("src\images\SETTER.png")
+    image_width, image_height = 300, 720
+    setter_image = cv2.resize(setter_image, (image_width, image_height))
 
-    width, height = 300, 720
-    setter_image = cv2.resize(setter_image, (width, height))
-
-    img2gray = cv2.cvtColor(setter_image, cv2.COLOR_BGR2GRAY) 
-    ret, mask = cv2.threshold(img2gray, 1, 255, cv2.THRESH_BINARY) 
 
 
     while cap.isOpened():
@@ -49,14 +46,6 @@ def main():
         xp, yp = 0, 0
 
         # Region of Image (ROI), where we want to insert logo 
-        roi = image[-height-10:10, -width-10:10] 
-    
-        # Set an index of where the mask is 
-        roi[np.where(mask)] = 0
-        roi += setter_image
-
-        print(f"roi {roi.shape}")
-        print(f"mask {mask.shape}")
 
         if detector.erase_mode(lm_list):
             cv2.circle(image, (lm_list[12][1], lm_list[12][2]), ERASER_SIZE, (0, 0, 0), -1)
@@ -79,6 +68,8 @@ def main():
             cv2.line(image_canvas, (xp, yp), (lm_list[8][1], lm_list[8][2]), PEN_COLOR, PEN_SIZE)
 
             xp, yp = lm_list[8][1], lm_list[8][2]
+
+        image[0:720, 0:300] = setter_image
 
         cv2.flip(image_canvas, 1)
         cv2.imshow('Hand Detection', cv2.flip(image, 1))
