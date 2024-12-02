@@ -61,8 +61,12 @@ def main():
             if 200 > lm_list[12][1] > 0 and 120 > lm_list[12][2] > 0:
                 print("danfriend")
 
-            elif 200 > lm_list[12][1] > 0 and 250 > lm_list >130:
+            elif 200 > lm_list[12][1] > 0 and 250 > lm_list[12][2] > 130:
                 print("luis")
+
+            elif 200 > lm_list[12][1] > 0 and 370 > lm_list[12][2] > 260:
+                print("jonel")
+
 
             else:
                 print(f"({lm_list[8][1]}, {lm_list[8][2]})")
