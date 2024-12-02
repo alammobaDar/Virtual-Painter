@@ -26,7 +26,7 @@ def main(pen_color = (0, 255, 0), pen_size = 25):
     setter_image = cv2.imread("src\images\SETTER.png")
     image_width, image_height = 200, 720
     setter_image = cv2.resize(setter_image, (image_width, image_height))
-
+    setter_image = cv2.flip(setter_image, 1)
 
 
     while cap.isOpened():
@@ -54,10 +54,10 @@ def main(pen_color = (0, 255, 0), pen_size = 25):
                 pen_color = (0, 0, 255)
 
             elif 200 > lm_list[12][1] > 0 and 370 > lm_list[12][2] > 260:
-                pen_color = (255, 0, 0)
-
+                pen_color = (240, 0, 0)
 
             elif 200 > lm_list[12][1] > 0 and 520 > lm_list[12][2] > 380:
+                # cv2.circle(image, (lm_list[8][1], lm_list[8][2]), pen_size, (0, 0 ,0), -1)
                 pen_color = (0, 0, 0)
 
             elif 200 > lm_list[12][1] > 100 and 720 > lm_list[12][2] > 540:
