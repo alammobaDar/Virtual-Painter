@@ -64,7 +64,7 @@ class Hand_detection:
             return True
 
 
-    def hand_landmark_coordinates(self, landmark, coordinate):
+    def get_lc(self, landmark, coordinate):
         return self.landmark_list[landmark][coordinate]
 #_____________________________________
 

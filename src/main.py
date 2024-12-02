@@ -46,34 +46,34 @@ def main(pen_color = (0, 255, 0), pen_size = 25):
         xp, yp = 0, 0
         
         if dt.selection_mode(lm_list):
-            if 200 > dt.hand_landmark_coordinates(12,1) > 0 and 120 > dt.hand_landmark_coordinates(12,2)  > 0:
+            if 200 > dt.get_lc(12,1) > 0 and 120 > dt.get_lc(12,2)  > 0:
                 pen_color = (0, 255, 0)
 
-            elif 200 > dt.hand_landmark_coordinates(12,1) > 0 and 240 > dt.hand_landmark_coordinates(12,2) > 130:
+            elif 200 > dt.get_lc(12,1) > 0 and 240 > dt.get_lc(12,2) > 130:
                 pen_color = (0, 0, 255)
 
-            elif 200 > dt.hand_landmark_coordinates(12,1) > 0 and 370 > dt.hand_landmark_coordinates(12,2) > 260:
+            elif 200 > dt.get_lc(12,1) > 0 and 370 > dt.get_lc(12,2) > 260:
                 pen_color = (225, 255, 0)
 
-            elif 200 > dt.hand_landmark_coordinates(12,1) > 0 and 520 > dt.hand_landmark_coordinates(12,2) > 380:
+            elif 200 > dt.get_lc(12,1) > 0 and 520 > dt.get_lc(12,2) > 380:
                 # cv2.circle(image, (lm_list[8][1], lm_list[8][2]), pen_size, (0, 0 ,0), -1)
                 pen_color = (0, 0, 0)
 
-            elif 200 > dt.hand_landmark_coordinates(12,1) > 100 and 720 > dt.hand_landmark_coordinates(12,2) > 540:
+            elif 200 > dt.get_lc(12,1) > 100 and 720 > dt.get_lc(12,2) > 540:
                 pen_size += 1
                 print(pen_size)
-            elif 100 > dt.hand_landmark_coordinates(12,1) > 0 and 720 > dt.hand_landmark_coordinates(12,2) > 540:
+            elif 100 > dt.get_lc(12,1) > 0 and 720 > dt.get_lc(12,2) > 540:
                 pen_size -= 1
                 print(pen_size)
             else:
-                print(f"({dt.hand_landmark_coordinates(8,1)}, {dt.hand_landmark_coordinates(8,2)})")
+                print(f"({dt.get_lc(8,1)}, {dt.get_lc(8,2)})")
         elif dt.drawing_mode(lm_list):
             if xp ==0 and yp == 0:
-                xp, yp = dt.hand_landmark_coordinates(8,1), dt.hand_landmark_coordinates(8,2)
+                xp, yp = dt.get_lc(8,1), dt.get_lc(8,2)
 
-            cv2.line(image_canvas, (xp, yp), (dt.hand_landmark_coordinates(8,1), dt.hand_landmark_coordinates(8,2)), pen_color, pen_size)
+            cv2.line(image_canvas, (xp, yp), (dt.get_lc(8,1), dt.get_lc(8,2)), pen_color, pen_size)
 
-            xp, yp = dt.hand_landmark_coordinates(8,1), dt.hand_landmark_coordinates(8,2)
+            xp, yp = dt.get_lc(8,1), dt.get_lc(8,2)
 
         image[0:image_height, 0:image_width] = setter_image
 
