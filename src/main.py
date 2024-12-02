@@ -8,12 +8,11 @@ from Hand_detector import Hand_detection
 HEIGHT = 720
 WIDTH = 1280
 PEN_SIZE = 25
-PEN_COLOR = (0, 255, 0)
 ERASER_COLOR = (0,0,0)
 ERASER_SIZE = 40
 
 
-def main():
+def main(pen_color = (0, 255, 0)):
 
     cap = cv2.VideoCapture(0)
     cap.set(3, WIDTH)
@@ -45,21 +44,19 @@ def main():
 
         xp, yp = 0, 0
 
-        # Region of Image (ROI), where we want to insert logo 
-
 
         if detector.selection_mode(lm_list):
             if 200 > lm_list[12][1] > 0 and 120 > lm_list[12][2] > 0:
-                PEN_COLOR = (0, 255, 0)
+                pen_color = (0, 255, 0)
 
             elif 200 > lm_list[12][1] > 0 and 250 > lm_list[12][2] > 130:
-                PEN_COLOR = (255, 0, 0)
+                pen_color = (255, 0, 0)
 
             elif 200 > lm_list[12][1] > 0 and 370 > lm_list[12][2] > 260:
-                PEN_COLOR = (0, 0, 255)
+                pen_color = (0, 0, 255)
 
             elif 200 > lm_list[12][1] > 0 and 520 > lm_list[12][2] > 380:
-                PEN_COLOR = (0, 0, 0)
+                pen_color = (0, 0, 0)
 
             else:
                 print(f"({lm_list[8][1]}, {lm_list[8][2]})")
@@ -67,7 +64,7 @@ def main():
             if xp ==0 and yp == 0:
                 xp, yp = lm_list[8][1], lm_list[8][2]
 
-            cv2.line(image_canvas, (xp, yp), (lm_list[8][1], lm_list[8][2]), PEN_COLOR, PEN_SIZE)
+            cv2.line(image_canvas, (xp, yp), (lm_list[8][1], lm_list[8][2]), pen_color, PEN_SIZE)
 
             xp, yp = lm_list[8][1], lm_list[8][2]
 
