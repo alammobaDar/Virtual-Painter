@@ -28,7 +28,6 @@ def main(pen_color = (0, 255, 0), pen_size = 25):
     setter_image = cv2.resize(setter_image, (image_width, image_height))
     setter_image = cv2.flip(setter_image, 1)
 
-
     while cap.isOpened():
         success, image = cap.read()
         if not success:
@@ -63,10 +62,14 @@ def main(pen_color = (0, 255, 0), pen_size = 25):
                 pen_size += 1
                 print(pen_size)
             elif 100 > dt.get_lc(12,1) > 0 and 720 > dt.get_lc(12,2) > 540:
-                pen_size -= 1
-                print(pen_size)
+                
+                if pen_size == 1:
+                    pass
+                else:
+                    pen_size -= 1
+                    print(pen_size)
             else:
-                print(f"({dt.get_lc(8,1)}, {dt.get_lc(8,2)})")
+                print(f"SELECTION MODE")
         elif dt.drawing_mode(lm_list):
             if xp ==0 and yp == 0:
                 xp, yp = dt.get_lc(8,1), dt.get_lc(8,2)
